@@ -21,9 +21,6 @@ public:
 	// Sets default values for this pawn's properties
 	AMySnakePawn();	
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-	TSubclassOf<class AMySpawnActor> ItemToSpawn;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -48,12 +45,4 @@ private:
 	UPROPERTY()
 	class AMySnakeController* ContRef;
 
-	UFUNCTION()
-	void SpawnSnakeParts();
-
-	TArray<FVector> SnakePartsLoc;
-
-	UPROPERTY()
-	float DelayTime;
-	
 };

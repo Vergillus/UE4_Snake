@@ -44,29 +44,15 @@ AMySnakePawn::AMySnakePawn()
 void AMySnakePawn::BeginPlay()
 {
 	Super::BeginPlay();	
-	LevelRef = Cast<ALevelProps>(GetWorld()->SpawnActor(ALevelProps::StaticClass()));
-	ContRef = Cast<AMySnakeController>(GetWorld()->GetFirstPlayerController());	
 
-	DelayTime = ContRef->TimerDelay;
+	//LevelRef = Cast<ALevelProps>(GetWorld()->SpawnActor(ALevelProps::StaticClass()));
+	ContRef = Cast<AMySnakeController>(GetWorld()->GetFirstPlayerController());	
 }
 
 // Called every frame
 void AMySnakePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	DelayTime -= DeltaTime;
-
-	if (ContRef->GetMovementDirection() != FVector::ZeroVector)
-	{
-		SnakePartsLoc.Insert(GetActorLocation(), 0);
-		SpawnSnakeParts();
-		DelayTime = ContRef->TimerDelay;
-		SnakePartsLoc.Empty();
-	}
-	UE_LOG(LogTemp, Error, TEXT("Array Size: %d"), SnakePartsLoc.Num());
-	
-
 }
 
 // Called to bind functionality to input
@@ -89,10 +75,11 @@ void AMySnakePawn::OnActorOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 		{
 			OtherActor->Destroy();
 			
-			if (LevelRef)
+			if (ContRef)
 			{
-				LevelRef->SpawnMyActor();	
-				
+				//LevelRef->SpawnMyActor();	
+				ContRef->SpawnSnakeParts();
+				ContRef->bIsSnakeGrowing = true;
 				//UE_LOG(LogTemp, Warning, TEXT("Spawn!!!!!"));
 			}
 			
@@ -100,31 +87,3 @@ void AMySnakePawn::OnActorOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 	}
 	
 }
-
-void AMySnakePawn::SpawnSnakeParts()
-{
-	if (ItemToSpawn != NULL)
-	{
-		
-		UWorld* const World = GetWorld();
-
-		if (World)
-		{
-			if (ContRef)
-			{
-			
-				for (int i = 1; i < 3; i++)
-				{
-					FVector SpawnLocation = SnakePartsLoc[i-1] - ContRef->GetMovementDirection();
-					AMySpawnActor* const SnakePart = World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
-					SnakePart->SetLifeSpan(ContRef->TimerDelay * i);
-					SnakePartsLoc.Add(SnakePart->GetActorLocation());
-					UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
-				}
-				
-			}	
-			
-		}
-	}
-}
-

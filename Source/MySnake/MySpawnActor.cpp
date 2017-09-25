@@ -17,7 +17,7 @@ AMySpawnActor::AMySpawnActor()
 	RootComponent = SphereCollision;
 
 	SpawnMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-
+	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SpawnMeshOBJ(TEXT("StaticMesh'/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere'"));
 	if (SpawnMeshOBJ.Succeeded())
 	{

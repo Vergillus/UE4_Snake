@@ -24,6 +24,15 @@ public:
 	UFUNCTION()
 	FVector GetMovementDirection() const;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
+	TSubclassOf<class AMySpawnActor> ItemToSpawn;
+
+	UFUNCTION()
+	void SpawnSnakeParts();
+
+	UPROPERTY()
+	bool bIsSnakeGrowing;
+	
 protected:
 
 	virtual void PlayerTick(float DeltaTime) override;
@@ -41,7 +50,11 @@ private:
 	UPROPERTY()
 	FVector MovementDirection;
 
+	UPROPERTY()
 	FTimerHandle MovementLoopTimerHandle;
-	
-	
+
+	UPROPERTY()
+	TArray<AActor*> MyActorsArr;	
+
+	UMaterial* SnakeMat;
 };
