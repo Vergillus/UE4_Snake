@@ -105,19 +105,17 @@ void AMySnakeController::GridMove()
 
 	for (int i = 1; i < MyActorsArr.Num(); i++)
 	{
-		FVector Temp = MyActorsArr[i]->GetActorLocation();
+		FVector PreviousPosition = MyActorsArr[i]->GetActorLocation();
 		MyActorsArr[i]->SetActorLocation(CurrentPosition,true);
-		CurrentPosition = Temp;
+		CurrentPosition = PreviousPosition;
 	}
 
-	
 }
 
 FVector AMySnakeController::GetMovementDirection() const
 {
 	return MovementDirection;
 }
-
 
 void AMySnakeController::SpawnSnakeParts()
 {
@@ -127,7 +125,7 @@ void AMySnakeController::SpawnSnakeParts()
 
 		if (World)
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Last member of array: %s and actor location is %s "), *MyActorsArr.Last()->GetName(), *MyActorsArr.Last()->GetActorLocation().ToString());
 				FVector SpawnLocation = MyActorsArr.Last()->GetActorLocation() - MovementDirection;
