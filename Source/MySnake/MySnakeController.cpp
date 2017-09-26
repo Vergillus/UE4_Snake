@@ -12,7 +12,9 @@
 AMySnakeController::AMySnakeController()
 {
 	TimerDelay = 0.01f;
+	//PrimaryActorTick.TickInterval = .5f;	
 	bIsSnakeGrowing = false;
+	bCanSpawn = true;
 }
 
 void AMySnakeController::BeginPlay()
@@ -44,7 +46,9 @@ void AMySnakeController::BeginPlay()
 
 void AMySnakeController::PlayerTick(float DeltaTime)
 {
-	Super::PlayerTick(DeltaTime);	
+	Super::PlayerTick(DeltaTime);
+
+	//GridMove();
 }
 
 void AMySnakeController::SetupInputComponent()
@@ -99,16 +103,35 @@ void AMySnakeController::ChangeMoveDirection()
 
 void AMySnakeController::GridMove()
 {
-	FVector CurrentPosition = FVector(MySnakePawn->GetActorLocation().X, MySnakePawn->GetActorLocation().Y, 55.f);
+	FVector CurrentPosition = FVector(MyActorsArr[0]->GetActorLocation().X, MyActorsArr[0]->GetActorLocation().Y, 50.f);
 
-	MySnakePawn->SetActorLocation(CurrentPosition + MovementDirection, true);
+	MyActorsArr[0]->SetActorLocation(CurrentPosition + MovementDirection, true);
 
-	for (int i = 1; i < MyActorsArr.Num(); i++)
+	/*for (int i = 1; i < MyActorsArr.Num(); i++)
 	{
 		FVector PreviousPosition = MyActorsArr[i]->GetActorLocation();
 		MyActorsArr[i]->SetActorLocation(CurrentPosition,true);
 		CurrentPosition = PreviousPosition;
+	}*/
+
+	if (bIsSnakeGrowing)
+	{
+		
+		if (bCanSpawn)
+		{
+			//SpawnSnakeParts();
+		}
+
+		for (int32 i = MyActorsArr.Num() - 1 ; i > 0; i--)
+		{
+			FVector PreviousPosition = MyActorsArr[i]->GetActorLocation();
+			MyActorsArr[i]->SetActorLocation(CurrentPosition, true);
+			CurrentPosition = PreviousPosition;
+		}
+
+		bCanSpawn = true;
 	}
+
 
 }
 
@@ -127,11 +150,17 @@ void AMySnakeController::SpawnSnakeParts()
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Last member of array: %s and actor location is %s "), *MyActorsArr.Last()->GetName(), *MyActorsArr.Last()->GetActorLocation().ToString());
-				FVector SpawnLocation = MyActorsArr.Last()->GetActorLocation() - MovementDirection;
-				AMySpawnActor* const SnakePart = World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
-				MyActorsArr.Add(SnakePart);
-				//UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
+				if (bCanSpawn)
+				{
+					//UE_LOG(LogTemp, Warning, TEXT("Last member of array: %s and actor location is %s "), *MyActorsArr.Last()->GetName(), *MyActorsArr.Last()->GetActorLocation().ToString());
+					//FVector SpawnLocation = MyActorsArr.Last()->GetActorLocation() - MovementDirection;
+					FVector SpawnLocation = (MyActorsArr[0]->GetActorLocation() - MovementDirection);
+					AMySpawnActor* const SnakePart = World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
+					MyActorsArr.Add(SnakePart);
+					bCanSpawn = false;
+					//UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
+				}
+				
 
 			}
 

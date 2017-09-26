@@ -45,7 +45,7 @@ void AMySnakePawn::BeginPlay()
 {
 	Super::BeginPlay();	
 
-	//LevelRef = Cast<ALevelProps>(GetWorld()->SpawnActor(ALevelProps::StaticClass()));
+	LevelRef = Cast<ALevelProps>(GetWorld()->SpawnActor(ALevelProps::StaticClass()));
 	ContRef = Cast<AMySnakeController>(GetWorld()->GetFirstPlayerController());	
 }
 
@@ -77,7 +77,7 @@ void AMySnakePawn::OnActorOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 			
 			if (ContRef)
 			{
-				//LevelRef->SpawnMyActor();	
+				LevelRef->SpawnMyActor();	
 				ContRef->SpawnSnakeParts();
 				ContRef->bIsSnakeGrowing = true;
 				//UE_LOG(LogTemp, Warning, TEXT("Spawn!!!!!"));

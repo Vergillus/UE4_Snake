@@ -14,6 +14,7 @@ AMySpawnActor::AMySpawnActor()
 
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Root Component"));
 	SphereCollision->BodyInstance.SetCollisionProfileName(TEXT("OverlapAll"));
+	
 	RootComponent = SphereCollision;
 
 	SpawnMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
