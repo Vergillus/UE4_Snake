@@ -56,8 +56,6 @@ private:
 	UPROPERTY()
 	TArray<AActor*> MyActorsArr;	
 
-	UMaterial* SnakeMat;
-
 	UPROPERTY()
 	bool bCanSpawn;
 };

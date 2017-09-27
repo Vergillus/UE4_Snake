@@ -9,6 +9,7 @@
 #include "LevelProps.h"
 #include "MySpawnActor.h"
 #include "MySnakeController.h"
+#include "MySnakeGameMode.h"
 
 
 // Sets default values
@@ -45,8 +46,9 @@ void AMySnakePawn::BeginPlay()
 {
 	Super::BeginPlay();	
 
-	LevelRef = Cast<ALevelProps>(GetWorld()->SpawnActor(ALevelProps::StaticClass()));
+	//LevelRef = Cast<ALevelProps>(GetWorld()->SpawnActor(ALevelProps::StaticClass()));
 	ContRef = Cast<AMySnakeController>(GetWorld()->GetFirstPlayerController());	
+	GameModeRef = Cast<AMySnakeGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 // Called every frame
@@ -70,15 +72,17 @@ void AMySnakePawn::OnActorOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Overlap!!!!!"));
+		UE_LOG(LogTemp, Warning, TEXT("Overlap with %s"),*OtherActor->GetName());
 		if (OtherActor->IsA(AMySpawnActor::StaticClass()))
 		{
 			OtherActor->Destroy();
 			
 			if (ContRef)
 			{
-				LevelRef->SpawnMyActor();	
+				//LevelRef->SpawnMyActor();
 				ContRef->SpawnSnakeParts();
+				GameModeRef->SpawnFood();
+				GameModeRef->IncrementScore();
 				ContRef->bIsSnakeGrowing = true;
 				//UE_LOG(LogTemp, Warning, TEXT("Spawn!!!!!"));
 			}

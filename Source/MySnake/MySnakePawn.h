@@ -45,4 +45,7 @@ private:
 	UPROPERTY()
 	class AMySnakeController* ContRef;
 
+	UPROPERTY()
+	class AMySnakeGameMode* GameModeRef;
+
 };

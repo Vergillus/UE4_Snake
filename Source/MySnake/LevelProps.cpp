@@ -53,11 +53,11 @@ ALevelProps::ALevelProps()
 	TopDownCamera->AspectRatio = 1.f;
 	TopDownCamera->SetAbsolute(false, false, true);	
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> BP_OBJ(TEXT("Blueprint'/Game/Blueprints/BP_SpawnActorFood.BP_SpawnActorFood'"));
+	/*static ConstructorHelpers::FObjectFinder<UBlueprint> BP_OBJ(TEXT("Blueprint'/Game/Blueprints/BP_SpawnActorFood.BP_SpawnActorFood'"));
 	if (BP_OBJ.Succeeded())
 	{
 		ItemToSpawn = (UClass*)BP_OBJ.Object->GeneratedClass;
-	}
+	}*/
 
 }
 
@@ -73,7 +73,7 @@ void ALevelProps::BeginPlay()
 		PlayerCont->SetViewTarget(this);
 	}
 	
-	SpawnMyActor();
+	//SpawnMyActor();
 }
 
 // Called every frame
@@ -134,21 +134,21 @@ FVector ALevelProps::RoundToMultiple(const FVector VectorToRound, const int32 Mu
 	return NewVec;
 }
 
-void ALevelProps::SpawnMyActor()
-{
-	if (ItemToSpawn != NULL)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawn FOOD"));
-		UWorld* const World = GetWorld();
-
-		if (World)
-		{
-			FVector SpawnLocation = GetRandomPointsInVolume();
-			SpawnLocation.Z = SpawningVolume->GetRelativeTransform().GetLocation().Z;
-			World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
-			//UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
-
-		}
-	}
-}
+//void ALevelProps::SpawnMyActor()
+//{
+//	if (ItemToSpawn != NULL)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("Spawn FOOD"));
+//		UWorld* const World = GetWorld();
+//
+//		if (World)
+//		{
+//			FVector SpawnLocation = GetRandomPointsInVolume();
+//			SpawnLocation.Z = SpawningVolume->GetRelativeTransform().GetLocation().Z;
+//			World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
+//			//UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
+//
+//		}
+//	}
+//}
 

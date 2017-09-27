@@ -35,13 +35,6 @@ void AMySnakeController::BeginPlay()
 
 	MyActorsArr.Add(MySnakePawn);
 
-	/*static ConstructorHelpers::FObjectFinder<UMaterial> Mat(TEXT("MaterialInstanceConstant'/Game/Materials/Green_Inst.Green_Inst''"));
-
-	if (Mat.Succeeded())
-	{
-		SnakeMat = (UMaterial*)Mat.Object;
-	}*/
-
 }
 
 void AMySnakeController::PlayerTick(float DeltaTime)

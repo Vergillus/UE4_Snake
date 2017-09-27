@@ -13,6 +13,29 @@ class AMySnakeGameMode : public AGameModeBase
 
 public:
 	AMySnakeGameMode();	
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
+	TSubclassOf<class ALevelProps> LevelRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
+	TSubclassOf<class AMySpawnActor> ItemToSpawn;
+
+	UFUNCTION()
+	void IncrementScore();
+
+	UFUNCTION()
+	int GetScore() const;
+
+	UFUNCTION()
+	void SpawnFood();
+
+private:
+
+	UPROPERTY()
+	int Score;
+
 };
 
 

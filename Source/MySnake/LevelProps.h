@@ -30,6 +30,7 @@ public:
 	FORCEINLINE class UStaticMeshComponent* GetFloor() const { return Floor; };
 	FORCEINLINE class UCameraComponent* GetCamera() const { return TopDownCamera; };
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; };
+	FORCEINLINE class UBoxComponent* GetSpawningVolume() const { return SpawningVolume; };
 
 	UFUNCTION()
 	FVector GetRandomPointsInVolume();
@@ -37,15 +38,15 @@ public:
 	UFUNCTION()
 	FVector RoundToMultiple(const FVector VectorToRound, const int32 Multiple);
 
-	UFUNCTION()
-	void SpawnMyActor();
+	/*UFUNCTION()
+	void SpawnMyActor();*/
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
-	TSubclassOf<class AMySpawnActor> ItemToSpawn;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
+	TSubclassOf<class AMySpawnActor> ItemToSpawn;*/
 
 public:	
 	// Called every frame
