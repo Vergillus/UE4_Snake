@@ -88,9 +88,6 @@ void AMySnakeController::ChangeMoveDirection()
 			MovementDirection = Temp;
 		}
 
-
-		/*UBoxComponent* Box = MyPawn->GetCollisionComponent();
-		Box->SetWorldLocation(FVector(100, 100, 0));*/
 	}
 }
 

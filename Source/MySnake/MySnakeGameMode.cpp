@@ -10,6 +10,9 @@
 
 AMySnakeGameMode::AMySnakeGameMode()
 {
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = true;
+
 	// use our custom PlayerController class
 	PlayerControllerClass = AMySnakePlayerController::StaticClass();
 
@@ -21,6 +24,7 @@ AMySnakeGameMode::AMySnakeGameMode()
 	}
 
 	Score = 0;
+	bIsGameOver = false;
 }
 
 void AMySnakeGameMode::BeginPlay()
@@ -28,6 +32,18 @@ void AMySnakeGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnFood();
+}
+
+void AMySnakeGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (GetInputAxisKeyValue(EKeys::R))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TICK GM"));
+	}
+
+	
 }
 
 void AMySnakeGameMode::SpawnFood()
@@ -39,7 +55,7 @@ void AMySnakeGameMode::SpawnFood()
 
 		if (World)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Spawn FOOD from GM"));
+			//UE_LOG(LogTemp, Warning, TEXT("Spawn FOOD from GM"));
 			//FVector SpawnLocation = GetRandomPointsInVolume();
 			if (LevelRef)
 			{
@@ -52,8 +68,6 @@ void AMySnakeGameMode::SpawnFood()
 				}
 			}			
 			
-			//UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
-
 		}
 	}
 }
@@ -66,6 +80,16 @@ void AMySnakeGameMode::IncrementScore()
 int AMySnakeGameMode::GetScore() const
 {
 	return Score;
+}
+
+bool AMySnakeGameMode::GetbIsGameOver() const
+{
+	return bIsGameOver;
+}
+
+void AMySnakeGameMode::SetbIsGameOver()
+{
+	bIsGameOver = !bIsGameOver;
 }
 
 
