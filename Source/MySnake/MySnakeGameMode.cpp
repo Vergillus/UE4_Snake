@@ -10,9 +10,7 @@
 
 AMySnakeGameMode::AMySnakeGameMode()
 {
-	PrimaryActorTick.bStartWithTickEnabled = true;
-	PrimaryActorTick.bCanEverTick = true;
-
+	
 	// use our custom PlayerController class
 	PlayerControllerClass = AMySnakePlayerController::StaticClass();
 
@@ -32,18 +30,6 @@ void AMySnakeGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnFood();
-}
-
-void AMySnakeGameMode::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (GetInputAxisKeyValue(EKeys::R))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TICK GM"));
-	}
-
-	
 }
 
 void AMySnakeGameMode::SpawnFood()
@@ -87,9 +73,9 @@ bool AMySnakeGameMode::GetbIsGameOver() const
 	return bIsGameOver;
 }
 
-void AMySnakeGameMode::SetbIsGameOver()
+void AMySnakeGameMode::SetbIsGameOver(bool val)
 {
-	bIsGameOver = !bIsGameOver;
+	bIsGameOver = val;
 }
 
 

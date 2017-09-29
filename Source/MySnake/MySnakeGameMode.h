@@ -15,8 +15,7 @@ public:
 	AMySnakeGameMode();	
 
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning")
 	TSubclassOf<class ALevelProps> LevelRef;
 
@@ -33,7 +32,7 @@ public:
 	bool GetbIsGameOver() const;
 
 	UFUNCTION()
-	void SetbIsGameOver();
+	void SetbIsGameOver(bool val);
 
 	UFUNCTION()
 	void SpawnFood();

@@ -6,15 +6,14 @@
 #include "LevelProps.h"
 #include "Engine/World.h"
 #include "MySpawnActor.h"
-#include "Materials/MaterialInstanceDynamic.h"
-#include "UObject/ConstructorHelpers.h"
+#include "MySnakeGameMode.h"
 
 AMySnakeController::AMySnakeController()
 {
 	TimerDelay = 0.01f;
-	//PrimaryActorTick.TickInterval = .5f;	
 	bIsSnakeGrowing = false;
 	bCanSpawn = true;
+	OneTimeSpawnAmount = 1;
 }
 
 void AMySnakeController::BeginPlay()
@@ -22,7 +21,7 @@ void AMySnakeController::BeginPlay()
 	Super::BeginPlay();
 
 	MySnakePawn = Cast<AMySnakePawn>(GetPawn());
-
+	GMRef = Cast<AMySnakeGameMode>(GetWorld()->GetAuthGameMode());
 	class ALevelProps* Props = Cast<ALevelProps>(GetPawn());
 
 	if (Props)
@@ -34,7 +33,6 @@ void AMySnakeController::BeginPlay()
 	GetWorld()->GetTimerManager().SetTimer(MovementLoopTimerHandle, this, &AMySnakeController::GridMove,TimerDelay,true);
 
 	MyActorsArr.Add(MySnakePawn);
-
 }
 
 void AMySnakeController::PlayerTick(float DeltaTime)
@@ -50,6 +48,7 @@ void AMySnakeController::SetupInputComponent()
 	check(InputComponent);
 
 	InputComponent->BindAction("ChangeDirection", IE_Pressed, this, &AMySnakeController::ChangeMoveDirection);
+	InputComponent->BindAction("Restart", IE_Pressed, this, &AMySnakeController::RestartLevel);
 	//InputComponent->BindAxis("MoveForward",this,&AMySnakeController::MoveForward);
 	
 }
@@ -60,7 +59,7 @@ void AMySnakeController::ChangeMoveDirection()
 
 	FVector Temp = MovementDirection;
 
-	if (MySnakePawn)
+	if (MySnakePawn && !GMRef->GetbIsGameOver())
 	{
 		if (IsInputKeyDown(EKeys::Up))
 		{
@@ -87,8 +86,8 @@ void AMySnakeController::ChangeMoveDirection()
 			UE_LOG(LogTemp, Error, TEXT("Wrong Button!!!"));
 			MovementDirection = Temp;
 		}
-
 	}
+	
 }
 
 void AMySnakeController::GridMove()
@@ -106,28 +105,31 @@ void AMySnakeController::GridMove()
 
 	if (bIsSnakeGrowing)
 	{
-		
-		if (bCanSpawn)
-		{
-			//SpawnSnakeParts();
-		}
-
 		for (int32 i = MyActorsArr.Num() - 1 ; i > 0; i--)
 		{
 			FVector PreviousPosition = MyActorsArr[i]->GetActorLocation();
 			MyActorsArr[i]->SetActorLocation(CurrentPosition, true);
 			CurrentPosition = PreviousPosition;
 		}
-
-		bCanSpawn = true;
 	}
+}
 
-
+void AMySnakeController::RestartLevel()
+{
+	if (GMRef->GetbIsGameOver())
+	{
+		Super::RestartLevel();
+	}
 }
 
 FVector AMySnakeController::GetMovementDirection() const
 {
 	return MovementDirection;
+}
+
+void AMySnakeController::StopMyTimer() const
+{
+	GetWorldTimerManager().ClearTimer(MovementLoopTimerHandle);
 }
 
 void AMySnakeController::SpawnSnakeParts()
@@ -138,20 +140,13 @@ void AMySnakeController::SpawnSnakeParts()
 
 		if (World)
 		{
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < OneTimeSpawnAmount; i++)
 			{
-				if (bCanSpawn)
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Last member of array: %s and actor location is %s "), *MyActorsArr.Last()->GetName(), *MyActorsArr.Last()->GetActorLocation().ToString());
-					//FVector SpawnLocation = MyActorsArr.Last()->GetActorLocation() - MovementDirection;
-					FVector SpawnLocation = (MyActorsArr[0]->GetActorLocation() - MovementDirection);
-					AMySpawnActor* const SnakePart = World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
-					MyActorsArr.Add(SnakePart);
-					bCanSpawn = false;
-					//UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
-				}
-				
-
+				//UE_LOG(LogTemp, Warning, TEXT("Last member of array: %s and actor location is %s "), *MyActorsArr.Last()->GetName(), *MyActorsArr.Last()->GetActorLocation().ToString());
+				//FVector SpawnLocation = MyActorsArr.Last()->GetActorLocation() - MovementDirection;
+				FVector SpawnLocation = (MyActorsArr[0]->GetActorLocation() - MovementDirection);
+				AMySpawnActor* const SnakePart = World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
+				MyActorsArr.Add(SnakePart);
 			}
 
 		}

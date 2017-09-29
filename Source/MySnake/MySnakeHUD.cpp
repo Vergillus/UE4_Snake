@@ -35,8 +35,7 @@ void AMySnakeHUD::DrawHUD()
 			PlayerScore = GMRef->GetScore();
 		}		
 
-		//DrawRect(FLinearColor::Transparent.Black, Center.X - 325.f, Center.Y - 325.f, Canvas->SizeX, Canvas->SizeY);
-
+		//DrawRect(FLinearColor::Transparent.Gray, Center.X - 150.f, Center.Y - 150.f, 300.f, 300.f);
 		DrawRect(FLinearColor::Transparent.Blue, Center.X - 100.f, Center.Y - 12.5f, 200.f, 25.f);
 		DrawText("You are DEAD!!!!", FLinearColor::Transparent.White, Center.X - 100.f, Center.Y - 12.5f, 0, 2);
 
@@ -44,8 +43,7 @@ void AMySnakeHUD::DrawHUD()
 		DrawText(FString::Printf(TEXT(" Your Score: %d "),PlayerScore), FLinearColor::Transparent.White, Center.X - 100.f, Center.Y + 12.5f, 0, 2);
 
 		DrawRect(FLinearColor::Transparent.Blue, Center.X - 160.f, Center.Y + 50.f, 310.f, 25.f);
-		DrawText("Press 'R' Key To Restart!!", FLinearColor::Transparent.White, Center.X - 150.f, Center.Y + 50.f, 0, 2);		
-
+		DrawText("Press 'R' Key To Restart!!", FLinearColor::Transparent.White, Center.X - 150.f, Center.Y + 50.f, 0, 2);
 	}
 	
 

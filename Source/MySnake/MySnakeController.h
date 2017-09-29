@@ -32,12 +32,19 @@ public:
 
 	UPROPERTY()
 	bool bIsSnakeGrowing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawnin")
+	int OneTimeSpawnAmount;
+
+	UFUNCTION()
+	void StopMyTimer() const;
 	
 protected:
 
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
+	virtual void RestartLevel() override;
 
 	void ChangeMoveDirection();
 	void GridMove();
@@ -46,6 +53,9 @@ private:
 
 	UPROPERTY()
 	class AMySnakePawn* MySnakePawn;
+
+	UPROPERTY()
+	class AMySnakeGameMode* GMRef;
 
 	UPROPERTY()
 	FVector MovementDirection;
