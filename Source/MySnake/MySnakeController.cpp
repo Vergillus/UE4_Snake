@@ -10,38 +10,33 @@
 
 AMySnakeController::AMySnakeController()
 {
-	TimerDelay = 0.01f;
-	bIsSnakeGrowing = false;
-	bCanSpawn = true;
+	// Setup Defaults
+	TimerDelay = 0.01f;	
 	OneTimeSpawnAmount = 1;
 }
 
 void AMySnakeController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	// Point to MySnakePawn Class
 	MySnakePawn = Cast<AMySnakePawn>(GetPawn());
+	// Point to GameMode class
 	GMRef = Cast<AMySnakeGameMode>(GetWorld()->GetAuthGameMode());
-	class ALevelProps* Props = Cast<ALevelProps>(GetPawn());
-
-	if (Props)
-	{
-		SetViewTarget(Props);
-	}
-
+	
 	MovementDirection = FVector::ZeroVector;
+
+	//Start timer that calls GridMove function in ever given interval
 	GetWorld()->GetTimerManager().SetTimer(MovementLoopTimerHandle, this, &AMySnakeController::GridMove,TimerDelay,true);
 
+	// Populate the array with MySnakePawn as first item
 	MyActorsArr.Add(MySnakePawn);
 }
 
 void AMySnakeController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
-	//GridMove();
 }
-
+// Called to bind functionality to input
 void AMySnakeController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -55,10 +50,10 @@ void AMySnakeController::SetupInputComponent()
 
 void AMySnakeController::ChangeMoveDirection()
 {
-	//class AMySnakePawn* MyPawn = Cast<AMySnakePawn>(GetPawn());
-
+	// Store MovementDirection before changing it
 	FVector Temp = MovementDirection;
-
+	
+	// Change the MovementDirection according to key press
 	if (MySnakePawn && !GMRef->GetbIsGameOver())
 	{
 		if (IsInputKeyDown(EKeys::Up))
@@ -81,19 +76,21 @@ void AMySnakeController::ChangeMoveDirection()
 			MovementDirection = FVector(0.f, +100.f, 0.f);
 		}
 
-		if (Temp == -MovementDirection && bIsSnakeGrowing)
-		{
-			UE_LOG(LogTemp, Error, TEXT("Wrong Button!!!"));
+		// Constraint Movement when there are more than one snake parts to avoid moving back
+		if (Temp == -MovementDirection && MyActorsArr.Num() > 1)
+		{	
 			MovementDirection = Temp;
 		}
 	}
 	
 }
-
+// Implements grid move 
 void AMySnakeController::GridMove()
 {
+	// Get the current position of first item in the array
 	FVector CurrentPosition = FVector(MyActorsArr[0]->GetActorLocation().X, MyActorsArr[0]->GetActorLocation().Y, 50.f);
 
+	// Set the first item location in the array
 	MyActorsArr[0]->SetActorLocation(CurrentPosition + MovementDirection, true);
 
 	/*for (int i = 1; i < MyActorsArr.Num(); i++)
@@ -103,7 +100,8 @@ void AMySnakeController::GridMove()
 		CurrentPosition = PreviousPosition;
 	}*/
 
-	if (bIsSnakeGrowing)
+	// IF the array size is bigger than 1 start shifting each array element to the position of previous element in reverse order.
+	if (MyActorsArr.Num() > 1)
 	{
 		for (int32 i = MyActorsArr.Num() - 1 ; i > 0; i--)
 		{
@@ -113,7 +111,7 @@ void AMySnakeController::GridMove()
 		}
 	}
 }
-
+// Overided Restart Level fuction
 void AMySnakeController::RestartLevel()
 {
 	if (GMRef->GetbIsGameOver())
@@ -121,17 +119,17 @@ void AMySnakeController::RestartLevel()
 		Super::RestartLevel();
 	}
 }
-
+// Retunr Current Movemement vector
 FVector AMySnakeController::GetMovementDirection() const
 {
 	return MovementDirection;
 }
-
+// Stops World Timer
 void AMySnakeController::StopMyTimer() const
 {
 	GetWorldTimerManager().ClearTimer(MovementLoopTimerHandle);
 }
-
+// Spawns snake parts
 void AMySnakeController::SpawnSnakeParts()
 {
 	if (ItemToSpawn != NULL)
@@ -140,12 +138,14 @@ void AMySnakeController::SpawnSnakeParts()
 
 		if (World)
 		{
+			// Spawn snake parts at back of the head always
 			for (int i = 0; i < OneTimeSpawnAmount; i++)
 			{
 				//UE_LOG(LogTemp, Warning, TEXT("Last member of array: %s and actor location is %s "), *MyActorsArr.Last()->GetName(), *MyActorsArr.Last()->GetActorLocation().ToString());
 				//FVector SpawnLocation = MyActorsArr.Last()->GetActorLocation() - MovementDirection;
 				FVector SpawnLocation = (MyActorsArr[0]->GetActorLocation() - MovementDirection);
 				AMySpawnActor* const SnakePart = World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
+				// Add the spawned parts to array
 				MyActorsArr.Add(SnakePart);
 			}
 

@@ -21,6 +21,7 @@ AMySnakeGameMode::AMySnakeGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
+	// Set defaults
 	Score = 0;
 	bIsGameOver = false;
 }
@@ -31,7 +32,7 @@ void AMySnakeGameMode::BeginPlay()
 
 	SpawnFood();
 }
-
+// Spawns the food
 void AMySnakeGameMode::SpawnFood()
 {
 	if (ItemToSpawn != NULL)
@@ -40,9 +41,7 @@ void AMySnakeGameMode::SpawnFood()
 		LevelRef = ALevelProps::StaticClass();
 
 		if (World)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("Spawn FOOD from GM"));
-			//FVector SpawnLocation = GetRandomPointsInVolume();
+		{			
 			if (LevelRef)
 			{
 				FVector SpawnLocation = LevelRef.GetDefaultObject()->GetRandomPointsInVolume();

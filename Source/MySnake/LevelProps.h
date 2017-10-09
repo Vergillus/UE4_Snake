@@ -10,16 +10,20 @@ UCLASS()
 class MYSNAKE_API ALevelProps : public AActor
 {
 	GENERATED_BODY()
-
+	
+	// Static mesh component for ground
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = LevelProps, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Floor;
 
+	// The main camera component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCamera;
 
+	// Spring arm component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	// A volume to spawn food
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* SpawningVolume;
 	
@@ -32,11 +36,13 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; };
 	FORCEINLINE class UBoxComponent* GetSpawningVolume() const { return SpawningVolume; };
 
+	// Returns a random vector in a given volume
 	UFUNCTION()
-	FVector GetRandomPointsInVolume();
+	FVector GetRandomPointsInVolume() const;
 
+	// Rounds numbers to multiples of given int
 	UFUNCTION()
-	FVector RoundToMultiple(const FVector VectorToRound, const int32 Multiple);
+	FVector RoundToMultiple(const FVector VectorToRound, const int32 Multiple) const;
 
 	/*UFUNCTION()
 	void SpawnMyActor();*/

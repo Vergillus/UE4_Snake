@@ -23,12 +23,15 @@ public:
 	
 private:
 
+	// Bool flag for checking whether to show the UI
 	UPROPERTY()
 	bool bCanShow;
 
+	// Store the player score
 	UPROPERTY()
 	int PlayerScore;
 
+	// Pointer referance to GameMode
 	UPROPERTY()
 	class AMySnakeGameMode* GMRef;
 };

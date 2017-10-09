@@ -20,6 +20,7 @@ ALevelProps::ALevelProps()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// Create and setup default values for Floor component
 	Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> FloorOBJ(TEXT("StaticMesh'/Game/StarterContent/Shapes/Shape_Plane.Shape_Plane'"));
 	if (FloorOBJ.Succeeded())
@@ -30,8 +31,10 @@ ALevelProps::ALevelProps()
 	Floor->RelativeScale3D = FVector(15.f, 15.f, 1.f);
 	Floor->BodyInstance.SetCollisionProfileName(TEXT("NoCollision"));
 	Floor->bGenerateOverlapEvents = false;
+	// Set floor as root component
 	RootComponent = Floor;
 
+	// Create and setup default values for SpawningVolume component
 	SpawningVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("Spawn Volume"));
 	SpawningVolume->SetBoxExtent(FVector(Floor->Bounds.BoxExtent.X, Floor->Bounds.BoxExtent.Y, 32.f));
 	SpawningVolume->SetupAttachment(RootComponent);
@@ -39,12 +42,14 @@ ALevelProps::ALevelProps()
 	SpawningVolume->BodyInstance.SetCollisionProfileName(TEXT("NoCollision"));
 	SpawningVolume->bGenerateOverlapEvents = false;
 
+	// Create and setup default values for CameraBoom spring component
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->TargetArmLength = 500.f;
 	CameraBoom->RelativeRotation = FRotator(-90.f, 0.f, 0.f);
 
+	// Create and setup default values for the main camera
 	TopDownCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Main Camera"));
 	TopDownCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCamera->SetProjectionMode(ECameraProjectionMode::Orthographic);
@@ -53,27 +58,20 @@ ALevelProps::ALevelProps()
 	TopDownCamera->AspectRatio = 1.f;
 	TopDownCamera->SetAbsolute(false, false, true);	
 
-	/*static ConstructorHelpers::FObjectFinder<UBlueprint> BP_OBJ(TEXT("Blueprint'/Game/Blueprints/BP_SpawnActorFood.BP_SpawnActorFood'"));
-	if (BP_OBJ.Succeeded())
-	{
-		ItemToSpawn = (UClass*)BP_OBJ.Object->GeneratedClass;
-	}*/
-
 }
 
 // Called when the game starts or when spawned
 void ALevelProps::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	// Set view target 
 	APlayerController* PlayerCont = GetWorld()->GetFirstPlayerController();
-
 	if (PlayerCont)
 	{
 		PlayerCont->SetViewTarget(this);
 	}
 	
-	//SpawnMyActor();
 }
 
 // Called every frame
@@ -82,8 +80,8 @@ void ALevelProps::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-FVector ALevelProps::GetRandomPointsInVolume()
+// Returns a random vector in a given volume
+FVector ALevelProps::GetRandomPointsInVolume() const
 {
 	FVector BoxExtent = SpawningVolume->Bounds.BoxExtent;
 	FVector Origin = SpawningVolume->Bounds.Origin;
@@ -91,17 +89,9 @@ FVector ALevelProps::GetRandomPointsInVolume()
 
 	return RoundToMultiple(RandomPoint, 100);
 }
-
-FVector ALevelProps::RoundToMultiple(const FVector VectorToRound, const int32 Multiple)
-{
-	/*check(Multiple);
-	int32 IsPositive = (int)(VectorToRound.X >= 0 && VectorToRound.Y >= 0);
-	FVector NewVector;
-	NewVector.X = ((VectorToRound.X + IsPositive * (Multiple - 1)) / Multiple) * Multiple;
-	NewVector.Y = ((VectorToRound.Y + IsPositive * (Multiple - 1)) / Multiple) * Multiple;
-
-	return NewVector;*/
-
+// Rounds vector to multiples of given int
+FVector ALevelProps::RoundToMultiple(const FVector VectorToRound, const int32 Multiple) const
+{	
 	if (Multiple == 0)
 	{
 		return VectorToRound;
@@ -128,27 +118,7 @@ FVector ALevelProps::RoundToMultiple(const FVector VectorToRound, const int32 Mu
 		NewVec.Y -= Multiple;
 	}
 
-	/*FMath::Clamp(NewVec.X, 0.f, SpawningVolume->Bounds.BoxExtent.X);
-	FMath::Clamp(NewVec.Y, 0.f, SpawningVolume->Bounds.BoxExtent.Y);*/
-
 	return NewVec;
 }
 
-//void ALevelProps::SpawnMyActor()
-//{
-//	if (ItemToSpawn != NULL)
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("Spawn FOOD"));
-//		UWorld* const World = GetWorld();
-//
-//		if (World)
-//		{
-//			FVector SpawnLocation = GetRandomPointsInVolume();
-//			SpawnLocation.Z = SpawningVolume->GetRelativeTransform().GetLocation().Z;
-//			World->SpawnActor<AMySpawnActor>(ItemToSpawn, SpawnLocation, FRotator::ZeroRotator);
-//			//UE_LOG(LogTemp, Warning, TEXT("SPAWN THE FUCK!!!!"));
-//
-//		}
-//	}
-//}
 

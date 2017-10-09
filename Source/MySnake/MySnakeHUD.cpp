@@ -6,6 +6,7 @@
 
 AMySnakeHUD::AMySnakeHUD()
 {
+	//Set defaults
 	bCanShow = false;
 	PlayerScore = 0;
 }
@@ -15,27 +16,29 @@ void AMySnakeHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Get the GameMode
 	GMRef = Cast<AMySnakeGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 void AMySnakeHUD::DrawHUD()
 {
 	Super::DrawHUD();
-
+	// Get the center of canvas
 	const FVector2D Center(Canvas->ClipX * 0.5f, Canvas->ClipY * 0.5f);
 
+	// Get whether or not the game is over
 	bCanShow = GMRef->GetbIsGameOver();
 
-	//UE_LOG(LogTemp, Warning, TEXT("Game Over !? %s"), bCanShow ? TEXT("true") : TEXT("false"));
-
+	// Show UI elements when the game is over
 	if (bCanShow)
 	{	
 		if (GMRef)
 		{
+			// Get the player score from GameMode
 			PlayerScore = GMRef->GetScore();
 		}		
 
-		//DrawRect(FLinearColor::Transparent.Gray, Center.X - 150.f, Center.Y - 150.f, 300.f, 300.f);
+		// Draw rectangles and corresponding texts 
 		DrawRect(FLinearColor::Transparent.Blue, Center.X - 100.f, Center.Y - 12.5f, 200.f, 25.f);
 		DrawText("You are DEAD!!!!", FLinearColor::Transparent.White, Center.X - 100.f, Center.Y - 12.5f, 0, 2);
 
